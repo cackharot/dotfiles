@@ -1,4 +1,7 @@
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export GO_PATH=$HOME/Projects/golang
+export GOPATH=$HOME/Projects/golang
+export GOBIN=$HOME/Projects/golang/bin
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$(go env GOPATH)/bin:$HOME/.emacs.d/bin:$GO_PATH/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/$LOGNAME/.oh-my-zsh"
@@ -19,6 +22,20 @@ if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
   export EDITOR='nvim'
+fi
+
+_direnv_hook() {
+  trap -- '' SIGINT;
+  eval "$("/usr/local/bin/direnv" export zsh)";
+  trap - SIGINT;
+}
+typeset -ag precmd_functions;
+if [[ -z ${precmd_functions[(r)_direnv_hook]} ]]; then
+  precmd_functions=( _direnv_hook ${precmd_functions[@]} )
+fi
+typeset -ag chpwd_functions;
+if [[ -z ${chpwd_functions[(r)_direnv_hook]} ]]; then
+  chpwd_functions=( _direnv_hook ${chpwd_functions[@]} )
 fi
 
 # aliases
