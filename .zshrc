@@ -7,12 +7,13 @@ export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$(go env GOPATH)/bin:$HOME
 export ZSH="/Users/$LOGNAME/.oh-my-zsh"
 
 ZSH_THEME="avit"
-#ZSH_THEME="powerlevel9k/powerlevel9k"
+# ZSH_THEME="agnoster"
+# ZSH_THEME="powerlevel9k/powerlevel9k"
 
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
 
-plugins=(git python rust autojump autoenv cp genpass tmux gitignore virtualenv brew osx)
+plugins=(git python rust autojump cp genpass tmux gitignore virtualenv brew osx)
 
 source $ZSH/oh-my-zsh.sh
 

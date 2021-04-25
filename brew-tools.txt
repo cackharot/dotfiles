@@ -63,5 +63,7 @@ alacritty
 firefox
 flycut
 font-source-code-pro
+font-hack-nerd-font
 keepassxc
 vscodium
+sdcc
