@@ -39,6 +39,22 @@ if [[ -z ${chpwd_functions[(r)_direnv_hook]} ]]; then
   chpwd_functions=( _direnv_hook ${chpwd_functions[@]} )
 fi
 
+# Toggle HTTP/HTTPS proxy from cmd line
+# pxy_on "Wi-Fi"
+# pxy_on "Thunderbolt Ethernet"
+function pxy_on {
+	networksetup -setwebproxystate $1 on
+	networksetup -setsecurewebproxystate $1 on
+}
+
+# Toggle HTTP/HTTPS proxy from cmd line
+# pxy_off "Wi-Fi"
+# pxy_off "Thunderbolt Ethernet"
+function pxy_off {
+	networksetup -setwebproxystate $1 off
+	networksetup -setsecurewebproxystate $1 off
+}
+
 # aliases
 alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
