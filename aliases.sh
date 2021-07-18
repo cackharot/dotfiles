@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # aliases
 alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="code ~/.oh-my-zsh"
