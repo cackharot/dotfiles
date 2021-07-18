@@ -84,8 +84,6 @@ mouse:
   double_click: { threshold: 300 }
   triple_click: { threshold: 300 }
   hide_when_typing: true
-  url:
-    launcher: open
 
 schemes:
   gruvbox_light: &gruvbox_light
