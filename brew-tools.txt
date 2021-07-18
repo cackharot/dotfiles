@@ -3,8 +3,10 @@ bat
 bdw-gc
 brotli
 c-ares
+diff-so-fancy
 direnv
 emacs
+fzf
 gdbm
 gettext
 git
@@ -30,6 +32,7 @@ libunistring
 libuv
 libvterm
 luajit-openresty
+luv
 m4
 mosh
 mpdecimal
@@ -43,6 +46,7 @@ node
 oniguruma
 openssl@1.1
 p11-kit
+pcre
 pcre2
 pkg-config
 protobuf
@@ -50,8 +54,10 @@ python@3.9
 readline
 ripgrep
 rustup-init
+six
 sqlite
 tcl-tk
+the_silver_searcher
 tig
 tmux
 unbound
@@ -62,8 +68,6 @@ xz
 alacritty
 firefox
 flycut
-font-source-code-pro
 font-hack-nerd-font
 keepassxc
 vscodium
-sdcc
