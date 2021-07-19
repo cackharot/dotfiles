@@ -9,6 +9,8 @@ autoenv
 emacs
 fd
 fzf
+font-fira-code
+font-et-book
 gdbm
 gettext
 git

@@ -33,6 +33,7 @@ function is_installed() {
 
 function install_brew() {
     /bin/bash -c $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
+    brew tap homebrew/cask-fonts
 }
 
 function install_vim_plug() {
@@ -57,7 +58,15 @@ function install_doom_emacs() {
     [ -f ~/.emacs.d/bin/doom ] && echo -e "${yellow}doom emacs already present skipping install!${default}" && return
     echo -e "${blue}Installing doom emacs..${default}"
     git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
-    ~/.emacs.d/bin/doom install
+    ~/.emacs.d/bin/doom --yes install
+    mkdir -p ~/.doom.d
+    echo -e "${blue}Linking doom emacs config files..${default}"
+    for fn in init.el config.el packages.el
+    do
+        echo -e "Linking emcas/$fn"
+        ln -sf "$SRC_DIR/emacs/$fn" "$HOME/.doom.d/$fn"
+    done
+    ~/.emacs.d/bin/doom sync
 }
 
 function install_tools_via_brew() {
