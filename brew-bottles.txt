@@ -5,7 +5,9 @@ brotli
 c-ares
 diff-so-fancy
 direnv
+autoenv
 emacs
+fd
 fzf
 gdbm
 gettext

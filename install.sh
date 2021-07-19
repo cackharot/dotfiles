@@ -4,6 +4,7 @@
 #
 SRC_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "$SRC_DIR/colors.sh"
+source "$SRC_DIR/env.sh"
 
 echo -e "
 ${yellow}
@@ -36,8 +37,8 @@ function install_brew() {
 
 function install_vim_plug() {
     NVIM_CONFIG="$HOME/.config/nvim/init.vim"
-    [ -f "$NVIM_CONFIG" ] && echo -e "${yellow}# NeoVim config [$NVIM_CONFIG] present skipping install!" && return
-    echo -e "${blue}Install NeoVim plugins..${default}"
+    [ -f "$NVIM_CONFIG" ] && echo -e "${yellow}# NeoVim config [$NVIM_CONFIG] present skipping install!${default}" && return
+    echo -e "${blue}Installing NeoVim plugins..${default}"
     /bin/bash -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     mkdir -p "$HOME/.config/nvim" "$HOME/.config/nvim/plugged"
@@ -46,9 +47,22 @@ function install_vim_plug() {
     echo -e "${blue}NeoVim vim-plug installed.${default}"
 }
 
+function install_tmux_tpm() {
+    [ -f ~/.tmux/plugins/tpm/tpm ] && echo -e "${yellow}tmux tpm already present skipping install!${default}" && return
+    echo -e "${blue}Installing tmux tpm plugins..${default}"
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+}
+
+function install_doom_emacs() {
+    [ -f ~/.emacs.d/bin/doom ] && echo -e "${yellow}doom emacs already present skipping install!${default}" && return
+    echo -e "${blue}Installing doom emacs..${default}"
+    git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+    ~/.emacs.d/bin/doom install
+}
+
 function install_tools_via_brew() {
     [ ! -f "brew-bottles.txt" ] && echo -e "${yellow}# brew-bottles.txt file required!" && return
-    xargs brew install < brew-bottles.txt
+    xargs brew install -q < brew-bottles.txt
 }
 
 function link_dotfiles() {
@@ -64,5 +78,7 @@ function link_dotfiles() {
 is_installed brew || install_brew
 install_tools_via_brew
 install_vim_plug
+install_tmux_tpm
+install_doom_emacs
 
 link_dotfiles
