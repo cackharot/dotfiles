@@ -30,3 +30,6 @@ autoload -Uz prompt_purification_setup; prompt_purification_setup
 
 source $DOTFILES/env.sh
 source $DOTFILES/aliases.sh
+
+[ -f $HOME/env.sh ] && source $HOME/env.sh
+[ -f $HOME/aliases.sh ] && source $HOME/aliases.sh
