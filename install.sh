@@ -76,7 +76,7 @@ function install_tools_via_brew() {
 
 function link_dotfiles() {
     echo -e "${blue}Linking dotfiles to your home directory [$HOME]...${default}"
-    for fn in .zshrc .tmux.conf .alacritty.yml .gitconfig
+    for fn in .zshrc .tmux.conf .tmux.remote.conf .alacritty.yml .gitconfig
     do
         echo -e "Linking $fn"
         ln -sf "$SRC_DIR/$fn" "$HOME/$fn"
