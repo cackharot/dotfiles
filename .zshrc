@@ -22,8 +22,6 @@ if [ $(command -v "fzf") ]; then
     bindkey -s '^v' 'vim $(fzf);^M'
 fi
 
-source $DOTFILES/zsh/scripts.sh
-
 # PROMPT
 fpath=($DOTFILES/zsh/prompt $fpath)
 autoload -Uz prompt_purification_setup; prompt_purification_setup
@@ -31,5 +29,8 @@ autoload -Uz prompt_purification_setup; prompt_purification_setup
 source $DOTFILES/env.sh
 source $DOTFILES/aliases.sh
 
-[ -f $HOME/env.sh ] && source $HOME/env.sh
-[ -f $HOME/aliases.sh ] && source $HOME/aliases.sh
+# Custom envs and aliases
+[ -f $HOME/.env.sh ] && source $HOME/.env.sh
+[ -f $HOME/.aliases.sh ] && source $HOME/.aliases.sh
+
+source $DOTFILES/zsh/scripts.sh
