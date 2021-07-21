@@ -47,15 +47,59 @@ bell:
   duration: 0
 
 custom_cursor_colors: true
+schemes:
+  def: &def
+    primary:
+      background: '0x191919'
+      foreground: '0xeaeaea'
+    cursor:
+      text:   '0xf1c1c1'
+      cursor: '0xff2600'
+  tomorrow_night_bright: &tnb
+    # Default colors
+    primary:
+      background: '#000000'
+      foreground: '#eaeaea'
 
-colors:
-  primary:
-    background: '0x191919'
-    foreground: '0xeaeaea'
+    # Normal colors
+    normal:
+      black:   '#000000'
+      red:     '#d54e53'
+      green:   '#b9ca4a'
+      yellow:  '#e6c547'
+      blue:    '#7aa6da'
+      magenta: '#c397d8'
+      cyan:    '#70c0ba'
+      white:   '#424242'
 
-  cursor:
-    text:   '0xf1c1c1'
-    cursor: '0xff2600'
+    # Bright colors
+    bright:
+      black:   '#666666'
+      red:     '#ff3334'
+      green:   '#9ec400'
+      yellow:  '#e7c547'
+      blue:    '#7aa6da'
+      magenta: '#b77ee0'
+      cyan:    '#54ced6'
+      white:   '#2a2a2a'
+    cursor:
+      text: '0x1d1f21'
+      cursor: '0xc5c8c6'
+#    cursor:
+#      text: '0x000000'
+#      cursor: '0xe0e0e0'
+#    cursor:
+#      text: CellBackground
+#      cursor: CellForeground
+    indexed_colors:
+      - { index: 16, color: '0xfc6d24' }
+      - { index: 17, color: '0xbe643c' }
+      - { index: 18, color: '0x303030' }
+      - { index: 19, color: '0x505050' }
+      - { index: 20, color: '0xd0d0d0' }
+      - { index: 21, color: '0xf5f5f5' }
+
+colors: *tnb
 
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
@@ -150,7 +194,7 @@ key_bindings:
   - { key: C,        mods: Command, action: Copy                         }
   - { key: Q,        mods: Command, action: Quit                         }
   - { key: L,        mods: Control, action: ClearLogNotice               }
-  - { key: L,        mods: Control, chars: "\x0c"                        }
+  - { key: L,        mods: Control, chars: "\x0c",     mode: ~Vi|~Search }
   - { key: N,        mods: Command, command: { program: "open", args: ["-nb", "io.alacritty"] } }
   - { key: Home,                    chars: "\x1bOH",   mode: AppCursor   }
   - { key: Home,                    chars: "\x1b[H",   mode: ~AppCursor  }
