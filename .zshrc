@@ -35,3 +35,5 @@ autoload -Uz prompt_purification_setup; prompt_purification_setup
 source $DOTFILES/env.sh
 source $DOTFILES/aliases.sh
 source $DOTFILES/zsh/scripts.sh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
