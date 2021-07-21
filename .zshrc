@@ -9,7 +9,13 @@ export ZSH="/Users/$LOGNAME/.oh-my-zsh"
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
 
-plugins=(git python autojump autoenv cp genpass tmux gitignore virtualenv brew osx)
+# Custom envs and aliases
+[ -f $HOME/.env.sh ] && source $HOME/.env.sh
+[ -f $HOME/.aliases.sh ] && source $HOME/.aliases.sh
+
+if [ -z "$plugins" ]; then
+  plugins=(git python autojump autoenv cp genpass tmux gitignore virtualenv brew osx)
+fi
 
 source $ZSH/oh-my-zsh.sh
 
@@ -28,9 +34,4 @@ autoload -Uz prompt_purification_setup; prompt_purification_setup
 
 source $DOTFILES/env.sh
 source $DOTFILES/aliases.sh
-
-# Custom envs and aliases
-[ -f $HOME/.env.sh ] && source $HOME/.env.sh
-[ -f $HOME/.aliases.sh ] && source $HOME/.aliases.sh
-
 source $DOTFILES/zsh/scripts.sh
