@@ -84,10 +84,21 @@ function link_dotfiles() {
     echo -e "${blue}Linking done.${default}"
 }
 
+function install_local_pbcopy() {
+    echo -e "${blue}pbcopy seutp with launchctl '$SRC_DIR/local.pbcopy.plist'...${default}"
+    [ ! -f "$SRC_DIR/local.pbcopy.plist" ] && echo -e "${yellow} pbcopy launhctl file not found" && return
+    launchctl unload local.pbcopy.plist
+    launchctl load local.pbcopy.plist
+    # to remove launchctl remove local.pbcopy.plist
+    # Host remote-server*
+    # RemoteForward 9997 localhost:9999
+}
+
 is_installed brew || install_brew
 install_tools_via_brew
 install_vim_plug
 install_tmux_tpm
 install_doom_emacs
+install_local_pbcopy
 
 link_dotfiles
