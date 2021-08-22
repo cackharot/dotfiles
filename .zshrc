@@ -17,8 +17,6 @@ fi
 
 if [ -z "$plugins" ]; then
   plugins=(git python autojump autoenv cp genpass tmux gitignore virtualenv brew osx)
-else
-  plugins=($plugins)
 fi
 
 source $ZSH/oh-my-zsh.sh
