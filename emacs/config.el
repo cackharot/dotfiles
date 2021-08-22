@@ -52,6 +52,9 @@
 
 (global-subword-mode 1)
 
+(setq haskell-stylish-on-save t)
+(setq haskell-compile-cabal-build-command "make build")
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
