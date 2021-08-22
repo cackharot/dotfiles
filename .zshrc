@@ -2,9 +2,7 @@ DOTFILES=${DOTFILES:-$HOME/dotfiles}
 export DOTFILES=$DOTFILES
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/$LOGNAME/.oh-my-zsh"
-
-#ZSH_THEME="avit"
+export ZSH="$HOME/.oh-my-zsh"
 
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
@@ -13,8 +11,14 @@ DISABLE_UPDATE_PROMPT="true"
 [ -f $HOME/.env.sh ] && source $HOME/.env.sh
 [ -f $HOME/.aliases.sh ] && source $HOME/.aliases.sh
 
+if [ ! -z "$ZSH_THEME_OVERRIDE" ]; then
+  ZSH_THEME=${ZSH_THEME_OVERRIDE}
+fi
+
 if [ -z "$plugins" ]; then
   plugins=(git python autojump autoenv cp genpass tmux gitignore virtualenv brew osx)
+else
+  plugins=($plugins)
 fi
 
 source $ZSH/oh-my-zsh.sh
@@ -31,9 +35,11 @@ if [ $(command -v "fzf") ]; then
     export FZF_ALT_C_OPTS="--preview 'tree -C | head -50'"
 fi
 
-# PROMPT
-fpath=($DOTFILES/zsh/prompt $fpath)
-autoload -Uz prompt_purification_setup; prompt_purification_setup
+if [ -z "$ZSH_THEME_OVERRIDE" ]; then
+    # PROMPT
+    fpath=($DOTFILES/zsh/prompt $fpath)
+    autoload -Uz prompt_purification_setup; prompt_purification_setup
+fi
 
 source $DOTFILES/env.sh
 source $DOTFILES/aliases.sh
