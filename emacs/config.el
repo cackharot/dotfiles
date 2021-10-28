@@ -3,6 +3,8 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
+;;; Code:
+(general-auto-unbind-keys)
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
@@ -13,6 +15,13 @@
        (setq mac-command-modifier      'meta
              mac-option-modifier       'alt
              mac-right-option-modifier 'alt)))
+
+(xterm-mouse-mode 1)
+
+;; (unmap! doom-leader-map "SPC SPC")
+(map! :nv "C-d" #'evil-multiedit-match-symbol-and-next
+      :nv "C-D" #'evil-multiedit-match-symbol-and-prev)
+
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -30,8 +39,9 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;;(setq doom-theme 'doom-one)
-;;(setq doom-theme 'doom-vibrant)
+;; (setq doom-theme 'doom-vibrant)
 (setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-snazzy)
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
@@ -42,7 +52,7 @@
 
 (setq doom-font (font-spec :family "Fira Code" :size 18)
       doom-variable-pitch-font (font-spec :family "ETBembo" :size 18))
-      ;;doom-variable-pitch-font (font-spec :family "Alegreya" :size 18))
+;;doom-variable-pitch-font (font-spec :family "Alegreya" :size 18))
 
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
@@ -52,8 +62,72 @@
 
 (global-subword-mode 1)
 
+(setq ledger-binary-path "hledger")
+(setq ledger-mode-should-check-version nil)
+(setq ledger-report-links-in-register nil)
+(setq ledger-post-amount-alignment-column 64)
+(setq ledger-highlight-xact-under-point nil)
+
+(defvar ledger-report-balance
+  (list "bal" (concat ledger-binary-path " -f %(ledger-file) bal -V --cost")))
+(defvar ledger-report-reg
+  (list "reg" (concat ledger-binary-path " -f %(ledger-file) reg")))
+(defvar ledger-report-payee
+  (list "payee" (concat ledger-binary-path " -f %(ledger-file) reg @%(payee)")))
+(defvar ledger-report-account
+  (list "account" (concat ledger-binary-path " -f %(ledger-file) reg %(account)")))
+(defvar ledger-report-monthly
+  (list "balance" (concat ledger-binary-path " -f %(ledger-file) balance expenses "
+                          "--tree --no-total --row-total --average --monthly")))
+
+;; Personal Accounting
+(global-set-key (kbd "C-c e") 'hledger-jentry)
+(global-set-key (kbd "C-c j") 'hledger-run-command)
+
+(setq ledger-reports
+      (list ledger-report-balance
+            ledger-report-reg
+            ledger-report-payee
+            ledger-report-account
+            ledger-report-monthly))
+
+;; enable some highlighting for CSV rules files
+(add-to-list 'auto-mode-alist '("\\.rules$" . conf-mode))
+;; (add-to-list 'auto-mode-alist '("\\.\\(h?ledger\\|journal\\|j\\)$" . ledger-mode))
+;; (add-to-list 'auto-mode-alist '("\\.journal\\'" . hledger-mode))
+;; useful when running reports in a shell buffer
+;; (defun highlight-negative-amounts nil (interactive)
+;;        (highlight-regexp "\\(\\$-\\|-\\$\\)[.,0-9]+" (quote hi-red-b))
+;; )
+
 (setq haskell-stylish-on-save t)
 (setq haskell-compile-cabal-build-command "make build")
+(setq lsp-lens-enable nil)
+(setq lsp-eldoc-enable-hover t)
+(setq lsp-ui-doc-enable t)
+(setq lsp-ui-peek-enable t)
+(setq lsp-ui-sideline-enable t)
+(setq lsp-ui-sideline-show-code-actions t)
+(setq lsp-ui-sideline-show-diagnostics t)
+(setq lsp-modeline-diagnostics-enable t)
+
+;; Cycle between snake case, camel case, etc.
+(require 'string-inflection)
+(global-set-key (kbd "C-c i") 'string-inflection-cycle)
+(global-set-key (kbd "C-c C") 'string-inflection-camelcase)        ;; Force to CamelCase
+(global-set-key (kbd "C-c L") 'string-inflection-lower-camelcase)  ;; Force to lowerCamelCase
+(global-set-key (kbd "C-c J") 'string-inflection-java-style-cycle) ;; Cycle through Java styles
+
+;; (defun to-underscore ()
+;;   (interactive)
+;;   (progn (replace-regexp "\\([A-Z]\\)" "_\\1" nil (region-beginning) (region-end))
+;;          (downcase-region (region-beginning) (region-end))
+;;   )
+;; )
+
+(add-hook 'elm-mode-hook 'elm-format-on-save-mode)
+
+;; (setq flycheck-hledger-strict t)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -71,3 +145,107 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;; (use-package flycheck-hledger
+;;   :after (flycheck ledger-mode)
+;;   :demand t)
+
+(setq-default
+ org-babel-load-languages '((shell . t)
+                            (emacs-lisp . t)
+                            (python . t)
+                            ;; (R . t)
+                            (haskell . t)
+                            ;; (hledger . t)
+                            (ledger . t)))
+
+(use-package hledger-mode
+  :bind (:map hledger-mode-map
+         ("C-c C-j" . hledger-run-command)
+         ("TAB" . org-cycle)
+         :map hledger-view-mode-map
+         ("C-c C-n" . hledger-running-report-months))
+  ;; :bind (("C-c j" . hledger-run-command)
+  ;;        :map hledger-mode-map
+  ;;        ("C-c e" . hledger-jentry)
+  ;;        ("M-p" . hledger/prev-entry)
+  ;;        ("M-n" . hledger/next-entry))
+  :init
+  (setq hledger-jfile
+        (expand-file-name "/opt/LProjects/hledger-journal/all.journal"))
+
+  ;; (setq hledger-email-secrets-file (expand-file-name "secrets.el"
+  ;;                                                   emacs-assets-directory))
+  ;; Expanded account balances in the overall monthly report are
+  ;; mostly noise for me and do not convey any meaningful information.
+  (setq hledger-show-expanded-report nil)
+
+  ;;(when (boundp 'my-hledger-service-fetch-url)
+  ;;  (setq hledger-service-fetch-url
+  ;;        my-hledger-service-fetch-url))
+
+  :config
+  (add-hook 'hledger-view-mode-hook #'hl-line-mode)
+  ;; (add-hook 'hledger-view-mode-hook #'center-text-for-reading)
+
+  (add-hook 'hledger-view-mode-hook
+            (lambda ()
+              (run-with-timer 1
+                              nil
+                              (lambda ()
+                                (when (equal hledger-last-run-command
+                                             "balancesheet")
+                                  ;; highlight frequently changing accounts
+                                  (highlight-regexp "^.*\\(savings\\|fd\\|cash\\).*$")
+                                  (highlight-regexp "^.*credit-card.*$"
+                                                    'hledger-warning-face))))))
+
+  (add-hook 'hledger-mode-hook
+            (lambda ()
+              (make-local-variable 'company-backends)
+              (add-to-list 'company-backends 'hledger-company))))
+
+(use-package hledger-input
+  ;; :pin manual
+  :load-path "packages/rest/hledger-mode/"
+  :bind (("C-c e" . hledger-capture)
+         :map hledger-input-mode-map
+         ("C-c C-b" . popup-balance-at-point))
+  :preface
+  (defun popup-balance-at-point ()
+    "Show balance for account at point in a popup."
+    (interactive)
+    (if-let ((account (thing-at-point 'hledger-account)))
+        (message (hledger-shell-command-to-string (format " balance -N %s "
+                                                          account)))
+      (message "No account at point")))
+
+  :config
+  (setq hledger-input-buffer-height 20)
+  (add-hook 'hledger-input-post-commit-hook #'hledger-show-new-balances)
+  (add-hook 'hledger-input-mode-hook #'auto-fill-mode)
+  (add-hook 'hledger-input-mode-hook
+            (lambda ()
+              (make-local-variable 'company-idle-delay)
+              (setq-local company-idle-delay 0.1))))
+
+;; (setq hledger-jfile
+;;         (expand-file-name "/opt/LProjects/hledger-journal/all.journal"))
+
+(use-package paren
+  :config
+  (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
+  (show-paren-mode 1))
+
+(use-package ws-butler
+  :hook ((text-mode . ws-butler-mode)
+         (prog-mode . ws-butler-mode)))
+
+
+(use-package which-key
+  :demand t
+  :config
+  (progn
+    (which-key-mode)))
+
+;;; config.el ends here
