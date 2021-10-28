@@ -75,3 +75,11 @@ matrix () {
   done | awk "$awkscript"
 }
 
+awsl() {
+  WSL_PORT=${$1:-2222}
+  if [ -z "${WSL_HOST}" ]; then
+	  echo "Define WSL_HOST before calling this...e.g., username@host"
+	  return -1
+  fi
+  nohup alacritty --config-file ~/.alacritty.wsl.yml --title "WSL" -e $SHELL -lc "ssh -p ${WSL_PORT} ${WSL_HOST} -t -o RemoteCommand=\"tmux new-session -A -D -s remote\"" >/dev/null &
+}
