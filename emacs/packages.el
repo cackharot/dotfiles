@@ -61,3 +61,8 @@
 (package! lsp-haskell)
 (package! evil-string-inflection)
 (package! hledger-mode)
+(package! ranger)
+(package! restclient)
+;; (package! org-superstar)
+
+;;; package.el ends here

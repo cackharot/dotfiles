@@ -54,8 +54,8 @@
       doom-variable-pitch-font (font-spec :family "ETBembo" :size 18))
 ;;doom-variable-pitch-font (font-spec :family "Alegreya" :size 18))
 
-(add-hook! 'org-mode-hook #'mixed-pitch-mode)
-(setq mixed-pitch-variable-pitch-cursor nil)
+;; (add-hook! 'org-mode-hook #'mixed-pitch-mode)
+;; (setq mixed-pitch-variable-pitch-cursor nil)
 (map! "M-g g" #'avy-goto-line)
 (map! "M-g M-g" #'avy-goto-line)
 (map! "M-g o" #'counsel-outline)
@@ -247,5 +247,42 @@
   :config
   (progn
     (which-key-mode)))
+
+(use-package restclient
+  :ensure t)
+
+
+(with-eval-after-load 'org-superstar
+  (setq org-superstar-item-bullet-alist
+        '((?* . ?•)
+          (?+ . ?➤)
+          (?- . ?•)))
+  (setq org-superstar-leading-bullet '(?\s)
+        org-superstar-remove-leading-stars t)
+  ;; (setq org-superstar-headline-bullets-list '(?\s))
+  (setq
+      org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿"))
+  (setq org-superstar-special-todo-items t)
+  ;; Enable custom bullets for TODO items
+  (setq org-superstar-todo-bullet-alist
+        '(("TODO" . ?☐)
+          ("NEXT" . ?✒)
+          ("HOLD" . ?✰)
+          ("WAITING" . ?☕)
+          ("CANCELLED" . ?✘)
+          ("DONE" . ?✔)))
+  (org-superstar-restart))
+(setq org-ellipsis " ▼ ")
+
+;; (remove-hook 'org-mode-hook #'org-superstar-mode)
+(after! org
+  (setq org-hide-leading-stars nil
+        org-startup-indented nil
+        org-indent-mode-turns-on-hiding-stars nil
+        org-startup-with-inline-images t))
+
+(use-package ranger
+  :ensure t)
+;; (setq ranger-preview-file true)
 
 ;;; config.el ends here
