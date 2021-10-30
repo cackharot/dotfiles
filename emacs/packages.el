@@ -57,6 +57,7 @@
 	  :recipe (:host github :repo "magit/git-modes"
 			 :files ("gitignore-mode.el")))
 
+(package! spacemacs-theme)
 (package! haskell-mode)
 (package! lsp-haskell)
 (package! evil-string-inflection)
@@ -64,5 +65,12 @@
 (package! ranger)
 (package! restclient)
 (package! keycast)
+(package! ranger)
+(package! centered-window)
+
+(package! elvish-mode)
+(package! ob-elvish)
+(package! package-lint)
+(package! iedit)
 
 ;;; package.el ends here

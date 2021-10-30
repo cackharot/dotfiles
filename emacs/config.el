@@ -14,12 +14,15 @@
 (cond (IS-MAC
        (setq mac-command-modifier      'meta
              mac-option-modifier       'alt
-             mac-right-option-modifier 'alt)))
-
+             mac-right-option-modifier 'alt
+             mac-pass-control-to-system nil)))
 ;; (setq mac-option-modifier nil
 ;;       mac-command-modifier 'meta)
 
 (xterm-mouse-mode 1)
+(setq kill-whole-line t)
+(setq display-line-numbers-type 'relative)
+(setq confirm-kill-emacs nil)
 
 ;; (unmap! doom-leader-map "SPC SPC")
 (map! :nv "C-d" #'evil-multiedit-match-symbol-and-next
@@ -44,28 +47,35 @@
 ;;(setq doom-theme 'doom-one)
 ;; (setq doom-theme 'doom-vibrant)
 (setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'spacemacs-light)
+;;(setq doom-theme 'doom-nord-light) ;;OK
 ;; (setq doom-theme 'doom-snazzy)
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
 
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-(setq display-line-numbers-type 'relative)
-
+;; test ligatures
+;; --> |>
 (setq doom-font (font-spec :family "Fira Code" :size 18)
       doom-big-font (font-spec :family "Fira Code" :size 24)
-      doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
+      ;; doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
+      doom-variable-pitch-font (font-spec :family "Alegreya" :size 18)
       doom-unicode-font (font-spec :family "JuliaMono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 ;;doom-variable-pitch-font (font-spec :family "Alegreya" :size 18))
 
 ;; this requires zen
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
+(add-hook! 'org-mode-hook #'solaire-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
 (setq +zen-text-scale 0.8)
 
+;; weird shell try once
+(setq vterm-shell "/bin/elvish")
+
+(map! :after magit "C-c C-g" #'magit-status)
+(after! undo-fu
+  (map! :map undo-fu-mode-map "C-?" #'undo-fu-only-redo))
 (map! "M-g g" #'avy-goto-line)
 (map! "M-g M-g" #'avy-goto-line)
 (map! "M-g o" #'counsel-outline)
@@ -249,9 +259,10 @@
   :config
   (add-hook 'hledger-view-mode-hook #'hl-line-mode)
   ;; (add-hook 'hledger-view-mode-hook #'center-text-for-reading)
-
+  ;; (add-hook 'hledger-view-mode-hook #'centered-window-mode)
   (add-hook 'hledger-view-mode-hook
             (lambda ()
+              #'centered-window-mode
               (run-with-timer 1
                               nil
                               (lambda ()
@@ -294,14 +305,21 @@
 ;; (setq hledger-jfile
 ;;         (expand-file-name "/opt/LProjects/hledger-journal/all.journal"))
 
+(use-package restclient)
 (use-package ws-butler
   :hook ((text-mode . ws-butler-mode)
          (prog-mode . ws-butler-mode)))
-
-
-(use-package restclient
-  :ensure t)
-
+(use-package! iedit
+  :defer
+  :config
+  (set-face-background 'iedit-occurrence "Magenta")
+  :bind
+  ("C-;" . iedit-mode))
+(use-package! unfill
+  :defer t
+  :bind
+  ("M-q" . unfill-toggle)
+  ("A-q" . unfill-paragraph))
 
 (with-eval-after-load 'org-superstar
   (setq org-superstar-item-bullet-alist
@@ -327,13 +345,14 @@
 
 ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
 (after! org
-  (setq org-hide-leading-stars nil
+  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  (setq org-clock-into-drawer t)
+  (setq org-log-into-drawer t)
+  (setq org-agenda-start-day "-1d")
+  (setq org-hide-emphasis-markers t
+        org-hide-leading-stars nil
         org-startup-indented nil
         org-indent-mode-turns-on-hiding-stars nil
         org-startup-with-inline-images t))
-
-(use-package ranger
-  :ensure t)
-;; (setq ranger-preview-file true)
 
 ;;; config.el ends here
