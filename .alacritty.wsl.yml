@@ -2,6 +2,7 @@ env:
   TERM: xterm-256color
 
 window:
+  opacity: 0.9
   dimensions:
     columns: 160
     lines: 40
@@ -24,24 +25,46 @@ cursor:
 
 font:
   normal:
-    #family: SF Mono
-    family: Hack Nerd Font
+    # family: Hasklig
+    # family: Hack Nerd Font
+    # family: Iosevka
+    family: Fira Code
     style: Regular
+    # style: Retina
 
   bold:
-    #family: SF Mono
-    family: Hack Nerd Font
+    # family: Hasklig
+    # family: Iosevka
+    family: Fira Code
     style: Bold
 
   italic:
-    #family: SF Mono
-    family: Hack Nerd Font
+    # family: Hasklig
+    # family: Iosevka
+    family: Fira Code
     style: Italic
   size: 12.0
   use_thin_strokes: true
 
+# font:
+#   normal:
+#     #family: SF Mono
+#     family: Hack Nerd Font
+#     style: Regular
+
+#   bold:
+#     #family: SF Mono
+#     family: Hack Nerd Font
+#     style: Bold
+
+#   italic:
+#     #family: SF Mono
+#     family: Hack Nerd Font
+#     style: Italic
+#   size: 12.0
+#   use_thin_strokes: true
+
 draw_bold_text_with_bright_colors: true
-background_opacity: 0.95
 bell:
   animation: EaseOutExpo
   duration: 0
