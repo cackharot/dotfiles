@@ -15,8 +15,10 @@
        (setq mac-command-modifier      'meta
              mac-option-modifier       'alt
              mac-right-option-modifier 'alt)))
-(setq mac-option-modifier nil
-      mac-command-modifier 'meta)
+
+;; (setq mac-option-modifier nil
+;;       mac-command-modifier 'meta)
+
 (xterm-mouse-mode 1)
 
 ;; (unmap! doom-leader-map "SPC SPC")
@@ -136,8 +138,8 @@
              string-inflection-capital-underscore
              string-inflection-upcase)
   :init
-  (map! :leader :prefix ("c~" . "naming convention")
-        :desc "cycle" "~" #'string-inflection-all-cycle
+  (map! :leader :prefix ("c." . "naming convention")
+        :desc "cycle" "." #'string-inflection-all-cycle
         :desc "toggle" "t" #'string-inflection-toggle
         :desc "CamelCase" "c" #'string-inflection-camelcase
         :desc "downCase" "d" #'string-inflection-lower-camelcase
@@ -163,9 +165,15 @@
     (if keycast-mode
         (progn
           (add-hook 'pre-command-hook 'keycast--update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+          (add-to-list 'global-mode-string '("" mode-line-keycast)))
       (remove-hook 'pre-command-hook 'keycast--update)
       (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (setq keycast-substitute-alist '((evil-next-line nil nil)
+                                   (evil-previous-line nil nil)
+                                   (evil-forward-char nil nil)
+                                   (evil-backward-char nil nil)
+                                   (ivy-done nil nil)
+                                   (self-insert-command nil nil)))
   (custom-set-faces!
     '(keycast-command :inherit doom-modeline-debug
                       :height 0.9)
@@ -211,7 +219,6 @@
                             (python . t)
                             ;; (R . t)
                             (haskell . t)
-                            ;; (hledger . t)
                             (ledger . t)))
 
 (use-package hledger-mode
@@ -287,21 +294,10 @@
 ;; (setq hledger-jfile
 ;;         (expand-file-name "/opt/LProjects/hledger-journal/all.journal"))
 
-(use-package paren
-  :config
-  (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
-  (show-paren-mode 1))
-
 (use-package ws-butler
   :hook ((text-mode . ws-butler-mode)
          (prog-mode . ws-butler-mode)))
 
-
-(use-package which-key
-  :demand t
-  :config
-  (progn
-    (which-key-mode)))
 
 (use-package restclient
   :ensure t)
