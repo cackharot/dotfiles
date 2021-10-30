@@ -63,6 +63,6 @@
 (package! hledger-mode)
 (package! ranger)
 (package! restclient)
-;; (package! org-superstar)
+(package! keycast)
 
 ;;; package.el ends here

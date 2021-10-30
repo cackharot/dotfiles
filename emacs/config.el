@@ -15,7 +15,8 @@
        (setq mac-command-modifier      'meta
              mac-option-modifier       'alt
              mac-right-option-modifier 'alt)))
-
+(setq mac-option-modifier nil
+      mac-command-modifier 'meta)
 (xterm-mouse-mode 1)
 
 ;; (unmap! doom-leader-map "SPC SPC")
@@ -49,13 +50,20 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 (setq doom-font (font-spec :family "Fira Code" :size 18)
-      doom-variable-pitch-font (font-spec :family "ETBembo" :size 18))
+      doom-big-font (font-spec :family "Fira Code" :size 24)
+      doom-variable-pitch-font (font-spec :family "ETBembo" :size 18)
+      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 ;;doom-variable-pitch-font (font-spec :family "Alegreya" :size 18))
 
-;; (add-hook! 'org-mode-hook #'mixed-pitch-mode)
-;; (setq mixed-pitch-variable-pitch-cursor nil)
+;; this requires zen
+(add-hook! 'org-mode-hook #'mixed-pitch-mode)
+(setq mixed-pitch-variable-pitch-cursor nil)
+(setq +zen-text-scale 0.8)
+
 (map! "M-g g" #'avy-goto-line)
 (map! "M-g M-g" #'avy-goto-line)
 (map! "M-g o" #'counsel-outline)
@@ -112,11 +120,58 @@
 (setq lsp-modeline-diagnostics-enable t)
 
 ;; Cycle between snake case, camel case, etc.
-(require 'string-inflection)
-(global-set-key (kbd "C-c i") 'string-inflection-cycle)
-(global-set-key (kbd "C-c C") 'string-inflection-camelcase)        ;; Force to CamelCase
-(global-set-key (kbd "C-c L") 'string-inflection-lower-camelcase)  ;; Force to lowerCamelCase
-(global-set-key (kbd "C-c J") 'string-inflection-java-style-cycle) ;; Cycle through Java styles
+;; (require 'string-inflection)
+;; (global-set-key (kbd "C-c i") 'string-inflection-cycle)
+;; (global-set-key (kbd "C-c C") 'string-inflection-camelcase)        ;; Force to CamelCase
+;; (global-set-key (kbd "C-c L") 'string-inflection-lower-camelcase)  ;; Force to lowerCamelCase
+;; (global-set-key (kbd "C-c J") 'string-inflection-java-style-cycle) ;; Cycle through Java styles
+
+(use-package! string-inflection
+  :commands (string-inflection-all-cycle
+             string-inflection-toggle
+             string-inflection-camelcase
+             string-inflection-lower-camelcase
+             string-inflection-kebab-case
+             string-inflection-underscore
+             string-inflection-capital-underscore
+             string-inflection-upcase)
+  :init
+  (map! :leader :prefix ("c~" . "naming convention")
+        :desc "cycle" "~" #'string-inflection-all-cycle
+        :desc "toggle" "t" #'string-inflection-toggle
+        :desc "CamelCase" "c" #'string-inflection-camelcase
+        :desc "downCase" "d" #'string-inflection-lower-camelcase
+        :desc "kebab-case" "k" #'string-inflection-kebab-case
+        :desc "under_score" "_" #'string-inflection-underscore
+        :desc "Upper_Score" "u" #'string-inflection-capital-underscore
+        :desc "UP_CASE" "U" #'string-inflection-upcase)
+  (after! evil
+    (evil-define-operator evil-operator-string-inflection (beg end _type)
+      "Define a new evil operator that cycles symbol casing."
+      :move-point nil
+      (interactive "<R>")
+      (string-inflection-all-cycle)
+      (setq evil-repeat-info '([?g ?~])))
+    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
+
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast--update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast--update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
 
 ;; (defun to-underscore ()
 ;;   (interactive)
