@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
+
 # User configuration
 
-if [ $(command -v "nvim") ]; then
+if [ "$(command -v "nvim")" ]; then
   if [[ -n $SSH_CONNECTION ]]; then
     export EDITOR='vim'
   else
@@ -16,35 +18,36 @@ if [ -z "${DISABLE_DIRENV}" ]; then
 	}
 	typeset -ag precmd_functions;
 	if [[ -z ${precmd_functions[(r)_direnv_hook]} ]]; then
-	  precmd_functions=( _direnv_hook ${precmd_functions[@]} )
+	  precmd_functions=( _direnv_hook "${precmd_functions[@]}" )
 	fi
 	typeset -ag chpwd_functions;
 	if [[ -z ${chpwd_functions[(r)_direnv_hook]} ]]; then
-	  chpwd_functions=( _direnv_hook ${chpwd_functions[@]} )
+	  chpwd_functions=( _direnv_hook "${chpwd_functions[@]}" )
 	fi
 fi
 
-if [ $(command -v "networksetup") ]; then
+if [ "$(command -v "networksetup")" ]; then
   # Toggle HTTP/HTTPS proxy from cmd line
   # pxy_on "Wi-Fi"
   # pxy_on "Thunderbolt Ethernet"
   function pxy_on() {
-    networksetup -setwebproxystate $1 on
-    networksetup -setsecurewebproxystate $1 on
+    networksetup -setwebproxystate "$1" on
+    networksetup -setsecurewebproxystate "$1" on
   }
 
   # Toggle HTTP/HTTPS proxy from cmd line
   # pxy_off "Wi-Fi"
   # pxy_off "Thunderbolt Ethernet"
   function pxy_off() {
-    networksetup -setwebproxystate $1 off
-    networksetup -setsecurewebproxystate $1 off
+    networksetup -setwebproxystate "$1" off
+    networksetup -setsecurewebproxystate "$1" off
   }
 fi
 
 matrix () {
-  local lines=$(tput lines)
-  cols=$(tput cols)
+  local lines
+  lines="$(tput lines)"
+  cols="$(tput cols)"
 
   awkscript='
   {
@@ -70,16 +73,23 @@ matrix () {
   clear
 
   while :; do
-      echo $lines $cols $(( $RANDOM % $cols)) $(( $RANDOM % 72 ))
+      echo "$lines" "$cols" "$(( RANDOM % cols))" "$(( RANDOM % 72 ))"
       sleep 0.05
   done | awk "$awkscript"
 }
 
 awsl() {
-  WSL_PORT=${$1:-2222}
+  WSL_PORT=${1:-2222}
   if [ -z "${WSL_HOST}" ]; then
 	  echo "Define WSL_HOST before calling this...e.g., username@host"
-	  return -1
+	  return 1
   fi
-  nohup alacritty --config-file ~/.alacritty.wsl.yml --title "WSL" -e $SHELL -lc "ssh -p ${WSL_PORT} ${WSL_HOST} -t -o RemoteCommand=\"tmux new-session -A -D -s remote\"" >/dev/null &
+  CNF="$HOME/.alacritty.wsl.yml"
+  if [ ! -f "$CNF" ]; then
+	  echo "$CNF file not present :("
+	  return 1
+  fi
+  ssh_cmd="ssh -p \"${WSL_PORT}\" \"${WSL_HOST}\" -t -o RemoteCommand=\"tmux new-session -A -D -s remote\"" 
+  nohup alacritty --config-file "$CNF" --title "WSL" -e "$SHELL" -lc "$ssh_cmd" >/dev/null &
 }
+
