@@ -118,11 +118,19 @@ fwork() {
     cd ~/Projects/$(find ~/Projects/* -type d -prune -exec basename {} ';' | sort | uniq | nl | fzf | cut -f 2)
 }
 
-fd() {
-    # Only work with alias d defined as:
-    
-    # alias d='dirs -v'
-    # for index ({1..9}) alias "$index"="cd +${index}"; unset index
-
-    d | fzf --height="20%" | cut -f 1 | source /dev/stdin
+fzfkill(){
+    (date; ps -ef) |
+        fzf --bind='ctrl-r:reload(date; ps -ef)' \
+            --header=$'Press CTRL-R to reload\n\n' --header-lines=2 \
+            --preview='echo {}' --preview-window=down \
+            --layout=reverse --height=80% | awk '{print $2}' | xargs kill -9
 }
+
+# fd() {
+#     # Only work with alias d defined as:
+
+#     # alias d='dirs -v'
+#     # for index ({1..9}) alias "$index"="cd +${index}"; unset index
+
+#     d | fzf --height="20%" | cut -f 1 | source /dev/stdin
+# }
