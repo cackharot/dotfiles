@@ -46,13 +46,16 @@
 ;; `load-theme' function. This is the default:
 ;;(setq doom-theme 'doom-one)
 ;; (setq doom-theme 'doom-vibrant)
-(setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-tomorrow-night)
+(setq doom-theme 'doom-zenburn)
+;; (setq doom-theme 'doom-acario-dark)
 ;; (setq doom-theme 'spacemacs-light)
 ;;(setq doom-theme 'doom-nord-light) ;;OK
 ;; (setq doom-theme 'doom-snazzy)
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
 
 ;; test ligatures
 ;; --> |>
@@ -321,13 +324,20 @@
   ("M-q" . unfill-toggle)
   ("A-q" . unfill-paragraph))
 
+(use-package! mixed-pitch
+  :hook (org-mode . mixed-pitch-mode)
+  :config
+  (setq mixed-pitch-set-height t)
+  (set-face-attribute 'variable-pitch nil :height 1.3)
+  )
+
 (with-eval-after-load 'org-superstar
   (setq org-superstar-item-bullet-alist
         '((?* . ?•)
           (?+ . ?➤)
           (?- . ?•)))
-  (setq org-superstar-leading-bullet '(?\s)
-        org-superstar-remove-leading-stars t)
+  ;; (setq org-superstar-leading-bullet '(?\s)
+  ;;       org-superstar-remove-leading-stars t)
   ;; (setq org-superstar-headline-bullets-list '(?\s))
   (setq
       org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿"))
@@ -345,7 +355,7 @@
 
 ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
 (after! org
-  (add-hook 'org-mode-hook 'variable-pitch-mode)
+  ;; (add-hook 'org-mode-hook 'variable-pitch-mode)
   (setq org-clock-into-drawer t)
   (setq org-log-into-drawer t)
   (setq org-agenda-start-day "-1d")
@@ -354,5 +364,14 @@
         org-startup-indented nil
         org-indent-mode-turns-on-hiding-stars nil
         org-startup-with-inline-images t))
+
+(use-package org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-super-agenda-groups `((:name "Today"
+                                   :time-grid t
+                                   :scheduled today)))
+  :config
+  (org-super-agenda-mode))
 
 ;;; config.el ends here

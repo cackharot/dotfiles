@@ -72,5 +72,6 @@
 (package! ob-elvish)
 (package! package-lint)
 (package! iedit)
+(package! org-super-agenda)
 
 ;;; package.el ends here
